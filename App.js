@@ -15,6 +15,7 @@ import {
   Text,
   TextInput,
   StatusBar,
+  Animated,
 } from 'react-native';
 
 import Input from './Input';
@@ -24,10 +25,11 @@ class App extends Component {
     value: '',
   };
 
-  handleTextChange = text =>
+  handleTextChange = text => {
     this.setState({
       value: text,
     });
+  };
 
   render() {
     return (
@@ -37,6 +39,7 @@ class App extends Component {
           value={this.state.value}
           onChangeText={this.handleTextChange}
         />
+        {/* <TextInput>hi</TextInput> */}
       </View>
     );
   }
