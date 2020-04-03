@@ -1,12 +1,3 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow strict-local
- */
-
-import React, {Component} from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -17,10 +8,10 @@ import {
   StatusBar,
   Animated,
 } from 'react-native';
+import React, {Component} from 'react';
+import Input1 from './Input';
 
-import Input1 from './InputWrapper';
-
-class App extends Component {
+class InputWrapper extends Component {
   state = {
     value: '',
   };
@@ -33,9 +24,12 @@ class App extends Component {
 
   render() {
     return (
-      <View style={styles.container}>
-        <Input1 label="아이디 또는 이메일" />
-        <Input1 label="비밀번호" />
+      <View>
+        <Input1
+          label={this.props.label}
+          value={this.state.value}
+          onChangeText={this.handleTextChange}
+        />
       </View>
     );
   }
@@ -49,4 +43,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default App;
+export default InputWrapper;

@@ -8,22 +8,32 @@
 
 import React, {Component} from 'react';
 import {
-  SafeAreaView,
   StyleSheet,
-  ScrollView,
   View,
   Text,
   TextInput,
-  StatusBar,
   Animated,
+  Dimensions,
 } from 'react-native';
 
 class App extends Component {
   state = {
     text: '',
     isFocused: false,
-    placeholder: '이메일 ',
+    placeholder: '',
     lineColor: '#aaa',
+    borderBottomColor: 'transparent',
+    fontColor: '#aaa',
+    activeFontSize: 15,
+    labelFontSize: 20,
+    width: Dimensions.get('window').width,
+    padding: 30,
+  };
+
+  handleTextChange = value => {
+    this.setState({
+      text: value,
+    });
   };
 
   constructor(props) {
@@ -31,14 +41,12 @@ class App extends Component {
     this._animatedIsFocused = new Animated.Value(
       this.props.value === '' ? 0 : 1,
     );
-    Text.defaultProps = Text.defaultProps || {};
-    Text.defaultProps.allowFontScaling = false;
   }
 
   componentDidUpdate() {
     Animated.timing(this._animatedIsFocused, {
       toValue: this.state.isFocused || this.props.value !== '' ? 1 : 0,
-      duration: 200,
+      duration: 250,
     }).start();
   }
 
@@ -47,18 +55,27 @@ class App extends Component {
       isFocused: true,
       placeholder: '이메일 또는 아이디',
       lineColor: 'transparent',
+      borderBottomColor: '#34bcff',
+      fontColor: '#34bcff',
     });
   handleBlur = () =>
-    this.setState({isFocused: false, placeholder: '', lineColor: '#aaa'});
+    this.setState({
+      isFocused: false,
+      placeholder: '',
+      lineColor: '#aaa',
+      borderBottomColor: 'transparent',
+      fontColor: '#aaa',
+    });
 
   render() {
     const {label, ...props} = this.props;
+
     const styles = StyleSheet.create({
       container: {
-        position: 'absolute',
+        position: 'relative',
         left: 0,
-        marginLeft: 30,
-        paddingBottom: 10,
+        // marginLeft: 30,
+        paddingBottom: this.state.padding * 2,
       },
       text: {
         textAlign: 'left',
@@ -68,94 +85,68 @@ class App extends Component {
     });
 
     const containerStyle = {
+      position: 'absolute',
+      paddingTop: `${this.state.labelFontSize}` * 0.25 + 2,
       transform: [
-        {
-          scale: this._animatedIsFocused.interpolate({
-            inputRange: [0, 1],
-            outputRange: [1, 0.7],
-          }),
-        },
         {
           translateY: this._animatedIsFocused.interpolate({
             inputRange: [0, 1],
-            outputRange: [0, -40],
-          }),
-        },
-        {
-          translateX: this._animatedIsFocused.interpolate({
-            inputRange: [0, 1],
-            outputRange: [0, -30],
+            outputRange: [0, -this.state.labelFontSize * 1.75],
           }),
         },
       ],
+    };
+
+    const textStyle = {
+      lineHeight: 20,
+      fontSize: this._animatedIsFocused.interpolate({
+        inputRange: [0, 1],
+        outputRange: [this.state.labelFontSize, this.state.activeFontSize],
+      }),
+      // paddingTop: 2,
+      color: this.state.fontColor,
     };
 
     const TextInputStyle = {
       borderBottomColor: this.state.lineColor,
       borderBottomWidth: 1,
-      paddingBottom: 8,
-      height: 36,
+      // paddingBottom: 8,
+      height: 34,
       fontSize: 20,
-      color: '#000',
-    };
-
-    const textStyle = {
-      lineHeight: 30,
-      fontSize: 20,
-      color: this._animatedIsFocused.interpolate({
-        inputRange: [0, 1],
-        outputRange: ['#aaa', '#34bcff'],
-      }),
+      // color: '#000',
     };
 
     const lineStyle = {
-      color: 'transparent',
-      top: 22,
-      borderColor: this._animatedIsFocused.interpolate({
-        inputRange: [0, 1],
-        outputRange: ['transparent', '#34bcff'],
-      }),
-
-      borderWidth: this._animatedIsFocused.interpolate({
+      borderBottomColor: this.state.borderBottomColor,
+      borderBottomWidth: this._animatedIsFocused.interpolate({
         inputRange: [0, 1],
         outputRange: [1, 2],
       }),
-      transform: [
-        {
-          scaleX: this._animatedIsFocused.interpolate({
-            inputRange: [0, 1],
-            outputRange: [1, 90],
-          }),
-        },
-        {
-          translateX: this._animatedIsFocused.interpolate({
-            inputRange: [0, 1],
-            outputRange: [0, 2],
-          }),
-        },
-      ],
-      // borderh,
+      width: this._animatedIsFocused.interpolate({
+        inputRange: [0, 1],
+        outputRange: [0, this.state.width - this.state.padding * 2],
+      }),
     };
 
     return (
       <>
-        <View style={styles.container} pointerEvents="none">
-          <Animated.View style={[lineStyle]} />
+        <View style={styles.container}>
+          <Animated.View style={containerStyle}>
+            <Animated.Text style={[styles.text, textStyle]}>
+              {label}
+            </Animated.Text>
+          </Animated.View>
+          <TextInput
+            {...props}
+            style={TextInputStyle}
+            onFocus={this.handleFocus}
+            onBlur={this.handleBlur}
+            blurOnSubmit
+            placeholder={this.state.placeholder}
+            clearButtonMode="always"
+          />
+          <Animated.View style={lineStyle} />
         </View>
-        <Animated.View style={[styles.container, containerStyle]}>
-          <Animated.Text style={[styles.text, textStyle]}>
-            {label}
-          </Animated.Text>
-        </Animated.View>
-        <TextInput
-          {...props}
-          style={TextInputStyle}
-          onFocus={this.handleFocus}
-          onBlur={this.handleBlur}
-          blurOnSubmit
-          placeholder={this.state.placeholder}
-          clearButtonMode="always"
-        />
       </>
     );
   }
