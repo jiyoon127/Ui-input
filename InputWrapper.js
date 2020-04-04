@@ -1,13 +1,4 @@
-import {
-  SafeAreaView,
-  StyleSheet,
-  ScrollView,
-  View,
-  Text,
-  TextInput,
-  StatusBar,
-  Animated,
-} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import React, {Component} from 'react';
 import Input1 from './Input';
 
@@ -16,7 +7,7 @@ class InputWrapper extends Component {
     value: '',
   };
 
-  handleTextChange = text => {
+  handleTextChange = (text) => {
     this.setState({
       value: text,
     });
@@ -34,13 +25,5 @@ class InputWrapper extends Component {
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 30,
-    justifyContent: 'center',
-  },
-});
 
 export default InputWrapper;

@@ -1,36 +1,21 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow strict-local
- */
-
 import React, {Component} from 'react';
-import {
-  StyleSheet,
-  View,
-  Text,
-  TextInput,
-  Animated,
-  Dimensions,
-} from 'react-native';
+import {StyleSheet, View, TextInput, Animated, Dimensions} from 'react-native';
 
 class App extends Component {
   state = {
     text: '',
     isFocused: false,
-    placeholder: '',
+    placeholder: this.props.label,
     lineColor: '#aaa',
     borderBottomColor: 'transparent',
-    fontColor: '#aaa',
-    activeFontSize: 15,
+    fontColor: '#add',
+    activeFontSize: 16,
     labelFontSize: 20,
     width: Dimensions.get('window').width,
     padding: 30,
   };
 
-  handleTextChange = value => {
+  handleTextChange = (value) => {
     this.setState({
       text: value,
     });
@@ -53,7 +38,7 @@ class App extends Component {
   handleFocus = () =>
     this.setState({
       isFocused: true,
-      placeholder: '이메일 또는 아이디',
+      placeholder: this.props.label,
       lineColor: 'transparent',
       borderBottomColor: '#34bcff',
       fontColor: '#34bcff',
@@ -73,20 +58,17 @@ class App extends Component {
     const styles = StyleSheet.create({
       container: {
         position: 'relative',
-        left: 0,
-        // marginLeft: 30,
         paddingBottom: this.state.padding * 2,
       },
       text: {
-        textAlign: 'left',
         includeFontPadding: false,
-        textAlignVertical: 'top',
+        textAlignVertical: 'center',
       },
     });
 
     const containerStyle = {
       position: 'absolute',
-      paddingTop: `${this.state.labelFontSize}` * 0.25 + 2,
+      includeFontPadding: false,
       transform: [
         {
           translateY: this._animatedIsFocused.interpolate({
@@ -103,17 +85,22 @@ class App extends Component {
         inputRange: [0, 1],
         outputRange: [this.state.labelFontSize, this.state.activeFontSize],
       }),
-      // paddingTop: 2,
       color: this.state.fontColor,
+      paddingTop: `${this.state.labelFontSize}` * 0.25 - 2,
     };
 
     const TextInputStyle = {
       borderBottomColor: this.state.lineColor,
       borderBottomWidth: 1,
-      // paddingBottom: 8,
-      height: 34,
-      fontSize: 20,
-      // color: '#000',
+      paddingBottom: 7,
+      lineHeight: 24,
+      padding: 0,
+      // height: 34,
+      // justifyContents: 'center',
+      includeFontPadding: false,
+      // fontSize: 20,
+      backgroundColor: 'red',
+      // color: 'red',
     };
 
     const lineStyle = {
@@ -136,15 +123,18 @@ class App extends Component {
               {label}
             </Animated.Text>
           </Animated.View>
-          <TextInput
-            {...props}
-            style={TextInputStyle}
-            onFocus={this.handleFocus}
-            onBlur={this.handleBlur}
-            blurOnSubmit
-            placeholder={this.state.placeholder}
-            clearButtonMode="always"
-          />
+          <Animated.View>
+            <TextInput
+              {...props}
+              multiline={false}
+              style={TextInputStyle}
+              onFocus={this.handleFocus}
+              onBlur={this.handleBlur}
+              blurOnSubmit
+              placeholder={this.state.placeholder}
+              clearButtonMode="always"
+            />
+          </Animated.View>
           <Animated.View style={lineStyle} />
         </View>
       </>
