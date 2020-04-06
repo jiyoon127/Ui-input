@@ -1,26 +1,48 @@
 import React, {Component} from 'react';
 import {StyleSheet, View, TextInput, Animated, Dimensions} from 'react-native';
 
-class App extends Component {
-  state = {
+interface Props {
+  label: string;
+  activeLabelFontSize: number;
+  labelFontSize: number;
+  padding: number;
+  secure: boolean;
+}
+interface State {
+  text: string;
+  isFocused: boolean;
+  placeholder: string;
+  lineColor: string;
+  borderBottomColor: string;
+  fontColor: string;
+  width: number;
+  secure: boolean;
+}
+
+class App extends Component<Props, State> {
+  state: State = {
+    text: '',
     isFocused: false,
     placeholder: '',
     lineColor: '#aaa',
     borderBottomColor: 'transparent',
     fontColor: '#aaa',
     width: Dimensions.get('window').width,
+    secure: this.props.secure,
   };
 
-  constructor(props) {
+  constructor(props: Props) {
     super(props);
     this._animatedIsFocused = new Animated.Value(
-      this.props.value === '' ? 0 : 1,
+      this.state.text === '' ? 0 : 1,
     );
   }
 
+  _animatedIsFocused: Animated.Value;
+
   componentDidUpdate() {
     Animated.timing(this._animatedIsFocused, {
-      toValue: this.state.isFocused || this.props.value !== '' ? 1 : 0,
+      toValue: this.state.isFocused || this.state.text !== '' ? 1 : 0,
       duration: 350,
     }).start();
   }
@@ -125,6 +147,9 @@ class App extends Component {
               blurOnSubmit
               placeholder={this.state.placeholder}
               clearButtonMode="always"
+              value={this.state.text}
+              onChangeText={(text) => this.setState({text})}
+              secureTextEntry={this.state.secure}
             />
           </Animated.View>
           <Animated.View style={lineStyle} />
