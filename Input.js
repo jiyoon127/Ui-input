@@ -3,22 +3,12 @@ import {StyleSheet, View, TextInput, Animated, Dimensions} from 'react-native';
 
 class App extends Component {
   state = {
-    text: '',
     isFocused: false,
-    placeholder: this.props.label,
+    placeholder: '',
     lineColor: '#aaa',
     borderBottomColor: 'transparent',
-    fontColor: '#add',
-    activeFontSize: 16,
-    labelFontSize: 20,
+    fontColor: '#aaa',
     width: Dimensions.get('window').width,
-    padding: 30,
-  };
-
-  handleTextChange = (value) => {
-    this.setState({
-      text: value,
-    });
   };
 
   constructor(props) {
@@ -31,7 +21,7 @@ class App extends Component {
   componentDidUpdate() {
     Animated.timing(this._animatedIsFocused, {
       toValue: this.state.isFocused || this.props.value !== '' ? 1 : 0,
-      duration: 250,
+      duration: 350,
     }).start();
   }
 
@@ -53,12 +43,18 @@ class App extends Component {
     });
 
   render() {
-    const {label, ...props} = this.props;
+    const {
+      label,
+      activeLabelFontSize,
+      labelFontSize,
+      padding,
+      ...props
+    } = this.props;
 
     const styles = StyleSheet.create({
       container: {
         position: 'relative',
-        paddingBottom: this.state.padding * 2,
+        paddingBottom: padding * 2,
       },
       text: {
         includeFontPadding: false,
@@ -73,34 +69,30 @@ class App extends Component {
         {
           translateY: this._animatedIsFocused.interpolate({
             inputRange: [0, 1],
-            outputRange: [0, -this.state.labelFontSize * 1.75],
+            outputRange: [
+              4,
+              -labelFontSize * (1 + activeLabelFontSize / labelFontSize),
+            ],
           }),
         },
       ],
     };
 
     const textStyle = {
-      lineHeight: 20,
+      lineHeight: labelFontSize,
       fontSize: this._animatedIsFocused.interpolate({
         inputRange: [0, 1],
-        outputRange: [this.state.labelFontSize, this.state.activeFontSize],
+        outputRange: [labelFontSize, activeLabelFontSize],
       }),
       color: this.state.fontColor,
-      paddingTop: `${this.state.labelFontSize}` * 0.25 - 2,
     };
 
     const TextInputStyle = {
       borderBottomColor: this.state.lineColor,
       borderBottomWidth: 1,
-      paddingBottom: 7,
-      lineHeight: 24,
-      padding: 0,
-      // height: 34,
-      // justifyContents: 'center',
-      includeFontPadding: false,
-      // fontSize: 20,
-      backgroundColor: 'red',
-      // color: 'red',
+      paddingBottom: (labelFontSize - activeLabelFontSize) * 2,
+      lineHeight: labelFontSize + 4,
+      fontSize: labelFontSize,
     };
 
     const lineStyle = {
@@ -111,7 +103,7 @@ class App extends Component {
       }),
       width: this._animatedIsFocused.interpolate({
         inputRange: [0, 1],
-        outputRange: [0, this.state.width - this.state.padding * 2],
+        outputRange: [0, this.state.width - padding * 2],
       }),
     };
 
