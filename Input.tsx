@@ -44,6 +44,7 @@ class App extends Component<Props, State> {
     Animated.timing(this._animatedIsFocused, {
       toValue: this.state.isFocused || this.state.text !== '' ? 1 : 0,
       duration: 350,
+      useNativeDriver: false,
     }).start();
   }
 

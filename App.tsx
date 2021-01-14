@@ -28,14 +28,14 @@ class App extends React.Component<Props, State> {
     return (
       <View style={this.styles.container}>
         <InputField
-          label="이메일 또는 아이디"
+          label="email or handle"
           activeLabelFontSize={this.state.activeLabelFontSize}
           labelFontSize={this.state.labelFontSize}
           padding={this.state.padding}
           secure={false}
         />
         <InputField
-          label="비밀번호"
+          label="password"
           activeLabelFontSize={this.state.activeLabelFontSize}
           labelFontSize={this.state.labelFontSize}
           padding={this.state.padding}
